@@ -1,0 +1,12 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      { "label": "compose up", "type": "shell", "command": "docker compose -f docker-compose.yml up -d --remove-orphans" },
+      { "label": "compose down", "type": "shell", "command": "docker compose -f docker-compose.yml down" },
+      { "label": "compose restart traefik", "type": "shell", "command": "docker compose -f docker-compose.yml restart traefik" },
+      { "label": "compose traefik logs", "type": "shell", "command": "docker compose -f docker-compose.yml logs -f traefik" },
+      { "label": "go test", "type": "shell", "command": "go test ./...", "group": "test" },
+      { "label": "test request", "type": "shell", "command": "curl -i -H 'Host: whoami.localhost' http://localhost:80/" }
+    ]
+  }
+  

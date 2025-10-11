@@ -1,0 +1,49 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go
+{
+	"name": "TM Htransform Development",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/go:1-1.24-bookworm",
+
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends make curl && sudo rm -rf /var/lib/apt/lists/* && /bin/bash -lc 'set -e; go install github.com/go-delve/delve/cmd/dlv@latest; go mod tidy'",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+		"extensions": [
+			"golang.Go",
+			"ms-azuretools.vscode-docker",
+			"ms-vscode.makefile-tools",
+			"tamasfe.even-better-toml",
+			"redhat.vscode-yaml",
+			"spmeesseman.vscode-taskexplorer"
+		],
+		"settings": {
+			"go.toolsManagement.autoUpdate": true,
+			"go.useLanguageServer": true,
+			"go.testExplorer.showOutput": "always"
+		}
+		}
+	},
+
+	"remoteUser": "vscode",
+
+	"runArgs": [
+		"--network=host"
+	],
+
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+	"remoteEnv": {
+		"HOST_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+	},
+}
