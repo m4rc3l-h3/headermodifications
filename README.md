@@ -18,7 +18,7 @@ To choose a Rule you have to fill the `Type` field with one of the following:
 - 'RewriteValueRule': to rewrite header values
 - 'Set'             : to set a header to a provided value
 - 'SetFrom'         : to set a header to the value of another header
-- 'Set'             : to set a header to the first non-empty value of a list of headers
+- 'SetFirst'        : to set a header to the first non-empty value of a list of headers
 
 Each Rule can be named with the `Name` field.
 
