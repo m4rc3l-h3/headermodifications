@@ -12,11 +12,12 @@ import (
 	"github.com/m4rc3l-h3/headermodifications/pkg/handler/rename"
 	"github.com/m4rc3l-h3/headermodifications/pkg/handler/rewrite"
 	"github.com/m4rc3l-h3/headermodifications/pkg/handler/set"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/set_first"
 	"github.com/m4rc3l-h3/headermodifications/pkg/types"
 )
 
-// HeadersTransformation holds the necessary components of a Traefik plugin.
-type HeadersTransformation struct {
+// HeadersModifications holds the necessary components of a Traefik plugin.
+type HeadersModifications struct {
 	name         string
 	next         http.Handler
 	reqHandlers  []types.Handler
@@ -43,6 +44,7 @@ func New(_ context.Context, next http.Handler, config *Config, name string) (htt
 		types.Rename:           rename.New,
 		types.RewriteValueRule: rewrite.New,
 		types.Set:              set.New,
+		types.SetFirst:         set_first.New,
 	}
 
 	reqHandlers := make([]types.Handler, 0, len(config.Rules))
@@ -70,7 +72,7 @@ func New(_ context.Context, next http.Handler, config *Config, name string) (htt
 		}
 	}
 
-	return &HeadersTransformation{
+	return &HeadersModifications{
 		name:         name,
 		next:         next,
 		reqHandlers:  reqHandlers,
@@ -80,7 +82,7 @@ func New(_ context.Context, next http.Handler, config *Config, name string) (htt
 
 // Iterate over every header to match the ones specified in the config and
 // return nothing if regexp failed.
-func (u *HeadersTransformation) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+func (u *HeadersModifications) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	for _, handler := range u.reqHandlers {
 		handler.Handle(responseWriter, request)
 	}
