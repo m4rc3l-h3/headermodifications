@@ -12,11 +12,13 @@ $ docker compose up
 
 To choose a Rule you have to fill the `Type` field with one of the following:
 
-- 'Del'             : to Delete a header
-- 'Join'            : to Join values on a header
+- 'Del'             : to delete a header
+- 'Join'            : to join values on a header
 - 'Rename'          : to rename a header
 - 'RewriteValueRule': to rewrite header values
-- 'Set'             : to Set a header
+- 'Set'             : to set a header to a provided value
+- 'SetFrom'         : to set a header to the value of another header
+- 'Set'             : to set a header to the first non-empty value of a list of headers
 
 Each Rule can be named with the `Name` field.
 
@@ -102,6 +104,83 @@ A rule Delete need one arguments
       Header: 'Cache-Control'
       Type: 'Del'
 ```
+
+### SetFrom
+
+A SetFrom rule will either create or replace the header and sets its value to the value of another
+header
+
+A rule Set need 3 arguments
+
+- `Header`, the header you want to create
+- `Value`, the value of the new header
+- `HeaderPrefix`, the value of the new header
+
+```yaml
+# Example 
+- Rule:
+      Name: 'Set X-Test'
+      Header: 'X-Test'
+      Value: 'X-From'
+      HeaderPrefix: '^'
+      Type: 'SetFrom'
+```
+
+```yaml
+# Old header:
+X-From: Foo
+
+# New header:
+X-From: Foo
+X-Test: Foo
+```
+
+### SetFirst
+
+A SetFirt rule will either create or replace the header and sets its value to the first non-empty
+value of a list of headers
+
+A rule Set need 3 arguments
+
+- `Header`, the header you want to create
+- `Values`, the list of headers
+- `HeaderPrefix`, the prefix denoting header references in the `Values` list
+
+```yaml
+# Example 
+- Rule:
+      Name: 'Set X-Test'
+      Header: 'X-Test'
+      Values:
+        - '^X-First'
+        - '^X-Second'
+      HeaderPrefix: '^'
+      Type: 'SetFirst'
+```
+
+```yaml
+# Old header:
+X-Second: Bar
+
+# New header:
+X-Second: Bar
+X-Test: Bar
+```
+
+### Delete
+
+A rule Delete need one arguments
+
+- `Header`, the header you want to delete
+
+```yaml
+# Example Del
+- Rule:
+      Name: 'Delete Cache-Control'
+      Header: 'Cache-Control'
+      Type: 'Del'
+```
+
 
 
 ### Join
