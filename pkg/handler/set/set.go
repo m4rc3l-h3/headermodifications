@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/tomMoulard/htransformation/pkg/types"
+	"github.com/tomMoulard/htransformation/pkg/utils"
 	"github.com/tomMoulard/htransformation/pkg/utils/header"
 )
 
@@ -16,7 +17,9 @@ func New(rule types.Rule) (types.Handler, error) {
 }
 
 func (s *Set) Validate() error {
-	if s.rule.Header == "" {
+	if s.rule.Header == "" ||
+		(s.rule.HeaderPrefix != "" && s.rule.Value == "") ||
+		(s.rule.Value != "" && s.rule.HeaderPrefix == "") {
 		return types.ErrMissingRequiredFields
 	}
 
@@ -24,11 +27,14 @@ func (s *Set) Validate() error {
 }
 
 func (s *Set) Handle(rw http.ResponseWriter, req *http.Request) {
+
+	newHeaderVal := utils.GetValue(s.rule.Value, s.rule.HeaderPrefix, req)
+
 	if s.rule.SetOnResponse {
-		rw.Header().Set(s.rule.Header, s.rule.Value)
+		rw.Header().Set(s.rule.Header, newHeaderVal)
 
 		return
 	}
 
-	header.Set(req, s.rule.Header, s.rule.Value)
+	header.Set(req, s.rule.Header, newHeaderVal)
 }

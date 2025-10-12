@@ -16,8 +16,7 @@ To choose a Rule you have to fill the `Type` field with one of the following:
 - 'Join'            : to join values on a header
 - 'Rename'          : to rename a header
 - 'RewriteValueRule': to rewrite header values
-- 'Set'             : to set a header to a provided value
-- 'SetFrom'         : to set a header to the value of another header
+- 'Set'             : to set a header to a provided value or to the value of another header
 - 'SetFirst'        : to set a header to the first non-empty value of a list of headers
 
 Each Rule can be named with the `Name` field.
@@ -70,12 +69,13 @@ X-Traefik-merged: 0 # A value from old headers
 
 ### Set
 
-A Set rule will either create or replace the header and value (if it already exists)
+A Set rule will either create or replace the header and value (if it already exists) by a constant
+value
 
 A rule Set need 2 arguments
 
 - `Header`, the header you want to create
-- `Value`, the value of the new header
+- `Value`, the constant value of the new header
 
 ```yaml
 # Example 
@@ -91,6 +91,33 @@ A rule Set need 2 arguments
 Cache-Control: Foo
 ```
 
+Alternatively the header and value can also be created or replaced by referencing another header
+
+In this case, the rule Set needs 3 arguments
+
+- `Header`, the header you want to create
+- `Value`, the name of another header prefixed by the prefix specified in `HeaderPrefix`
+- `HeaderPrefix`, the value of the new header
+
+```yaml
+# Example 
+- Rule:
+      Name: 'Set X-Test'
+      Header: 'X-Test'
+      Value: '^X-From'
+      HeaderPrefix: '^'
+      Type: 'Set'
+```
+
+```yaml
+# Old header:
+X-From: Foo
+
+# New header:
+X-From: Foo
+X-Test: Foo
+```
+
 ### Delete
 
 A rule Delete need one arguments
@@ -103,36 +130,6 @@ A rule Delete need one arguments
       Name: 'Delete Cache-Control'
       Header: 'Cache-Control'
       Type: 'Del'
-```
-
-### SetFrom
-
-A SetFrom rule will either create or replace the header and sets its value to the value of another
-header
-
-A rule Set need 3 arguments
-
-- `Header`, the header you want to create
-- `Value`, the value of the new header
-- `HeaderPrefix`, the value of the new header
-
-```yaml
-# Example 
-- Rule:
-      Name: 'Set X-Test'
-      Header: 'X-Test'
-      Value: 'X-From'
-      HeaderPrefix: '^'
-      Type: 'SetFrom'
-```
-
-```yaml
-# Old header:
-X-From: Foo
-
-# New header:
-X-From: Foo
-X-Test: Foo
 ```
 
 ### SetFirst

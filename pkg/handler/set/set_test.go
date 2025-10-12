@@ -22,37 +22,37 @@ func TestSetHandler(t *testing.T) {
 		wantOnResponse map[string]string
 		expectedHost   string
 	}{
-		// {
-		// 	name: "Set one simple",
-		// 	rule: types.Rule{
-		// 		Header: "X-Test",
-		// 		Value:  "Tested",
-		// 	},
-		// 	requestHeaders: map[string]string{
-		// 		"Foo": "Bar",
-		// 	},
-		// 	wantOnRequest: map[string]string{
-		// 		"Foo":    "Bar",
-		// 		"X-Test": "Tested",
-		// 	},
-		// 	expectedHost: "example.com",
-		// },
-		// {
-		// 	name: "Set already existing simple",
-		// 	rule: types.Rule{
-		// 		Header: "X-Test",
-		// 		Value:  "Tested",
-		// 	},
-		// 	requestHeaders: map[string]string{
-		// 		"Foo":    "Bar",
-		// 		"X-Test": "Bar",
-		// 	},
-		// 	wantOnRequest: map[string]string{
-		// 		"Foo":    "Bar",
-		// 		"X-Test": "Tested", // Override
-		// 	},
-		// 	expectedHost: "example.com",
-		// },
+		{
+			name: "Set one simple",
+			rule: types.Rule{
+				Header: "X-Test",
+				Value:  "Tested",
+			},
+			requestHeaders: map[string]string{
+				"Foo": "Bar",
+			},
+			wantOnRequest: map[string]string{
+				"Foo":    "Bar",
+				"X-Test": "Tested",
+			},
+			expectedHost: "example.com",
+		},
+		{
+			name: "Set already existing simple",
+			rule: types.Rule{
+				Header: "X-Test",
+				Value:  "Tested",
+			},
+			requestHeaders: map[string]string{
+				"Foo":    "Bar",
+				"X-Test": "Bar",
+			},
+			wantOnRequest: map[string]string{
+				"Foo":    "Bar",
+				"X-Test": "Tested", // Override
+			},
+			expectedHost: "example.com",
+		},
 		{
 			name: "Set on response",
 			rule: types.Rule{
@@ -78,6 +78,80 @@ func TestSetHandler(t *testing.T) {
 				Value:  "example.org",
 			},
 			expectedHost: "example.org",
+		},
+		{
+			name: "Set overwrite existing header by another header value",
+			rule: types.Rule{
+				Header:       "X-Test",
+				Value:        "^X-From",
+				HeaderPrefix: "^",
+			},
+			requestHeaders: map[string]string{
+				"X-Test": "Foo",
+				"X-From": "Bar",
+			},
+			wantOnRequest: map[string]string{
+				"X-Test": "Bar",
+				"X-From": "Bar",
+			},
+			expectedHost: "example.com",
+		},
+		{
+			name: "Set new header using another header value",
+			rule: types.Rule{
+				Header:       "X-Test",
+				Value:        "^X-From",
+				HeaderPrefix: "^",
+			},
+			requestHeaders: map[string]string{
+				"X-From": "Bar",
+			},
+			wantOnRequest: map[string]string{
+				"X-Test": "Bar",
+				"X-From": "Bar",
+			},
+			expectedHost: "example.com",
+		},
+		{
+			name: "Set overwrite header by non-existing referenced header",
+			rule: types.Rule{
+				Header:       "X-Test",
+				Value:        "^X-From",
+				HeaderPrefix: "^",
+			},
+			requestHeaders: map[string]string{
+				"X-Test": "Foo",
+			},
+			wantOnRequest: map[string]string{
+				"X-Test": "",
+			},
+			expectedHost: "example.com",
+		},
+		{
+			name: "Set create new header from referenced non-existing header",
+			rule: types.Rule{
+				Header:       "X-Test",
+				Value:        "^X-From",
+				HeaderPrefix: "^",
+			},
+			requestHeaders: map[string]string{},
+			wantOnRequest: map[string]string{
+				"X-Test": "",
+			},
+			expectedHost: "example.com",
+		},
+		{
+			name: "Set create new header from prefix without value",
+			rule: types.Rule{
+				Header:       "X-Test",
+				Value:        "^",
+				HeaderPrefix: "^",
+			},
+			requestHeaders: map[string]string{},
+			wantOnRequest: map[string]string{
+				"X-Test": "^",
+			},
+			expectedHost: "example.com",
 		},
 	}
 
@@ -132,10 +206,38 @@ func TestValidation(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "missing Value when HeaderPrefix is set",
+			rule: types.Rule{
+				Header:       "not-empty",
+				HeaderPrefix: "not-empty",
+				Type:         types.Set,
+			},
+			wantErr: true,
+		},
+		{
+			name: "missing HeaderPrefix when Value is set",
+			rule: types.Rule{
+				Header: "not-empty",
+				Value:  "not-empty",
+				Type:   types.Set,
+			},
+			wantErr: true,
+		},
+		{
 			name: "valid rule",
 			rule: types.Rule{
 				Header: "not-empty",
 				Type:   types.Set,
+			},
+			wantErr: false,
+		},
+		{
+			name: "valid header replacement rule",
+			rule: types.Rule{
+				Header:       "not-empty",
+				HeaderPrefix: "not-empty",
+				Value:        "not-empty",
+				Type:         types.Set,
 			},
 			wantErr: false,
 		},
