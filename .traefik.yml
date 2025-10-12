@@ -1,7 +1,7 @@
-displayName: Header transformation
+displayName: Header transformation - Test
 type: middleware
 
-import: github.com/tomMoulard/htransformation
+import: github.com/m4rc3l-h3/htransformation
 
 summary: 'Transform some headers with some other ones, see https://github.com/traefik/traefik/issues/6047'
 
