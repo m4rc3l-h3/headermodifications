@@ -21,11 +21,10 @@ To choose a Rule you have to fill the `Type` field with one of the following:
 
 Each Rule can be named with the `Name` field.
 
-Each Rule can also be configured to change headers on the request or the
-response by using the `SetOnResponse` configuration.
-If `SetOnResponse` is set to `true`, the header will be changed on the response.
-Otherwise, it will be changed on the request.
-Its default value is `false`.
+Each Rule can also be configured to change headers on the request or the response by using the
+`SetOnResponse` configuration. 
+If `SetOnResponse` is set to `true`, the header will be changed on the response. Otherwise, it will
+be changed on the request. Its default value is `false`.
 
 ### Rename
 
@@ -182,7 +181,8 @@ A rule Delete need one arguments
 
 ### Join
 
-A Join rule will concatenate the values of the existing header with the new one. If the header doesn't exist, it'll do nothing
+A Join rule will concatenate the values of the existing header with the new one. If the header
+doesn't exist, it'll do nothing
 
 It needs 3 arguments
 - `Header`, the header you want to join
@@ -209,7 +209,8 @@ Cache-Control: gzip, deflate
 Cache-Control: gzip, deflate,Foo,Bar
 ```
 
-You can reuse other header values in `Value` or one of the `Values` by setting an additional argument `HeaderPrefix`.
+You can reuse other header values in `Value` or one of the `Values` by setting an additional
+argument `HeaderPrefix`. 
 Example:
 
 ```yaml
@@ -236,7 +237,9 @@ CF-Connecting-IP: 2.2.2.2
 
 ### RewriteValue Rule
 
-A RewriteValue Rule will replace **all instances** of the matching pattern in the values of the headers identified by a matching regex with the provided value. This works for multiple matches within a single header value (e.g., values separated by semicolons).
+A RewriteValue Rule will replace **all instances** of the matching pattern in the values of the
+headers identified by a matching regex with the provided value. This works for multiple matches
+within a single header value (e.g., values separated by semicolons).
 
 It needs 2 arguments
 

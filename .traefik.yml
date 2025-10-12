@@ -3,7 +3,7 @@ type: middleware
 
 import: github.com/m4rc3l-h3/htransformation
 
-summary: 'Transform headers'
+summary: 'Transform headers using rules applied on request and response headers'
 
 testData:
   Rules:
