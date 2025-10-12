@@ -11,7 +11,7 @@ release:
   github: {}
   prerelease: auto
   mode: append
-  footer: "**Full Changelog**: https://github.com/m4rc3l-h3/htransformation/compare/{{ .PreviousTag }}...{{ .Tag }}"
+  footer: "**Full Changelog**: https://github.com/m4rc3l-h3/headermodifications/compare/{{ .PreviousTag }}...{{ .Tag }}"
 
 changelog:
   use: github

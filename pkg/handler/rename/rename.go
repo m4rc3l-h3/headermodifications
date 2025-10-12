@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/m4rc3l-h3/htransformation/pkg/types"
-	"github.com/m4rc3l-h3/htransformation/pkg/utils/header"
+	"github.com/m4rc3l-h3/headermodifications/pkg/types"
+	"github.com/m4rc3l-h3/headermodifications/pkg/utils/header"
 )
 
 type Rename struct {

@@ -2,9 +2,9 @@
 
 http:
   middlewares:
-    htransformation:
+    example:
       plugin:
-        htransformation:
+        headermodifications:
           Rules:
             - Rule:
               Name: 'Header transformation'

@@ -1,14 +1,14 @@
-package htransformation_test
+package headermodifications_test
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	plug "github.com/m4rc3l-h3/htransformation"
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/assert"
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/require"
-	"github.com/m4rc3l-h3/htransformation/pkg/types"
+	plug "github.com/m4rc3l-h3/headermodifications"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/assert"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/require"
+	"github.com/m4rc3l-h3/headermodifications/pkg/types"
 )
 
 func TestValidation(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/assert"
-	"github.com/m4rc3l-h3/htransformation/pkg/utils/header"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/assert"
+	"github.com/m4rc3l-h3/headermodifications/pkg/utils/header"
 )
 
 func TestAdd(t *testing.T) {

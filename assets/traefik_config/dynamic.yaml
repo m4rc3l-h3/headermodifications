@@ -1,0 +1,14 @@
+http:
+  middlewares:
+    example:
+      plugin:
+        headermodifications:
+          Rules:
+            - Rule:
+              Name: 'Set Test header'
+              Header: 'X-Test'
+              Value: "Passed"
+              Type: 'Set'
+              HeaderPrefix: ^
+            
+            

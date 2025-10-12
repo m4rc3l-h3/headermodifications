@@ -1,4 +1,4 @@
-package htransformation
+package headermodifications
 
 import (
 	"bufio"
@@ -7,12 +7,12 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/m4rc3l-h3/htransformation/pkg/handler/deleter"
-	"github.com/m4rc3l-h3/htransformation/pkg/handler/join"
-	"github.com/m4rc3l-h3/htransformation/pkg/handler/rename"
-	"github.com/m4rc3l-h3/htransformation/pkg/handler/rewrite"
-	"github.com/m4rc3l-h3/htransformation/pkg/handler/set"
-	"github.com/m4rc3l-h3/htransformation/pkg/types"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/deleter"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/join"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/rename"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/rewrite"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/set"
+	"github.com/m4rc3l-h3/headermodifications/pkg/types"
 )
 
 // HeadersTransformation holds the necessary components of a Traefik plugin.

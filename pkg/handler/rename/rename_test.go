@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/m4rc3l-h3/htransformation/pkg/handler/rename"
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/assert"
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/require"
-	"github.com/m4rc3l-h3/htransformation/pkg/types"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/rename"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/assert"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/require"
+	"github.com/m4rc3l-h3/headermodifications/pkg/types"
 )
 
 func TestRenameHandler(t *testing.T) {

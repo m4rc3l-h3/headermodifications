@@ -3,7 +3,7 @@ package require
 import (
 	"testing"
 
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/assert"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/assert"
 )
 
 func NoError(t *testing.T, err error) {

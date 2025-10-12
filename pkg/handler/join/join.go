@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/m4rc3l-h3/htransformation/pkg/types"
-	"github.com/m4rc3l-h3/htransformation/pkg/utils"
+	"github.com/m4rc3l-h3/headermodifications/pkg/types"
+	"github.com/m4rc3l-h3/headermodifications/pkg/utils"
 )
 
 type Join struct {

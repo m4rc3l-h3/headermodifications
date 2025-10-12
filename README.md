@@ -1,6 +1,6 @@
-# Header transformation plugin for traefik
+# Header modification plugin for traefik
 
-This plugin allows changing on the fly, the header value of a request.
+This plugin allows modifying on the fly, the header value of a request.
 
 ## How to dev
 
@@ -26,7 +26,7 @@ Each Rule can also be configured to change headers on the request or the respons
 If `SetOnResponse` is set to `true`, the header will be changed on the response. Otherwise, it will
 be changed on the request. Its default value is `false`.
 
-### Rename
+### Rename Rule
 
 A Rule Rename needs two arguments.
 
@@ -66,7 +66,7 @@ X-Traefik-date: mer. 21 oct. 2020 11:57:39 CEST
 X-Traefik-merged: 0 # A value from old headers
 ```
 
-### Set
+### Set Rule
 
 A Set rule will either create or replace the header and value (if it already exists) by a constant
 value
@@ -117,7 +117,7 @@ X-From: Foo
 X-Test: Foo
 ```
 
-### Delete
+### Delete Rule
 
 A rule Delete need one arguments
 
@@ -131,7 +131,7 @@ A rule Delete need one arguments
       Type: 'Del'
 ```
 
-### SetFirst
+### SetFirst Rule
 
 A SetFirt rule will either create or replace the header and sets its value to the first non-empty
 value of a list of headers
@@ -163,7 +163,7 @@ X-Second: Bar
 X-Test: Bar
 ```
 
-### Delete
+### Delete Rule
 
 A rule Delete need one arguments
 
@@ -179,7 +179,7 @@ A rule Delete need one arguments
 
 
 
-### Join
+### Join Rule
 
 A Join rule will concatenate the values of the existing header with the new one. If the header
 doesn't exist, it'll do nothing

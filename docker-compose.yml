@@ -1,26 +1,22 @@
-version: '3.9'
 
 services:
   traefik:
-    image: traefik:v3.0
-    command:
-      - --api.insecure=true
-      - --providers.docker
-      - --providers.file.filename=/rules-htransformation.yaml
-      - --log.level=DEBUG
-      - --experimental.localPlugins.htransformation.moduleName=github.com/m4rc3l-h3/htransformation
+    image: traefik:v3
     ports:
-      - 80:80
-      - 8080:8080
+      - "8080:80"       # Web
+      - "8081:8080"     # Dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./rules-htransformation.yaml:/rules-htransformation.yaml
-      - .:/plugins-local/src/github.com/m4rc3l-h3/htransformation/
+      - ./assets/traefik_config:/etc/traefik
+      - .:/plugins-local/src/github.com/m4rc3l-h3/headermodifications
     tty: true
 
   whoami:
     image: traefik/whoami # https://github.com/traefik/whoami
     command: -name whoami
     labels:
-      traefik.http.routers.whoami.rule: Host(`whoami.localhost`)
-      traefik.http.routers.whoami.middlewares: htransformation@file
+      - "traefik.enable=true"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+      - "traefik.http.routers.whoami.middlewares=example@file"

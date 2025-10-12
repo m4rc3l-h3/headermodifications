@@ -5,10 +5,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/m4rc3l-h3/htransformation/pkg/handler/set"
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/assert"
-	"github.com/m4rc3l-h3/htransformation/pkg/tests/require"
-	"github.com/m4rc3l-h3/htransformation/pkg/types"
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/set"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/assert"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/require"
+	"github.com/m4rc3l-h3/headermodifications/pkg/types"
 )
 
 func TestSetHandler(t *testing.T) {
