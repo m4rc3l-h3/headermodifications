@@ -1,4 +1,4 @@
-displayName: Header transformation - Extended
+displayName: Header Modifications
 type: middleware
 
 import: github.com/m4rc3l-h3/header-modifications
