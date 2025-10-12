@@ -1,9 +1,9 @@
-displayName: Header transformation - Test
+displayName: Header transformation - Extended
 type: middleware
 
 import: github.com/m4rc3l-h3/htransformation
 
-summary: 'Transform some headers with some other ones, see https://github.com/traefik/traefik/issues/6047'
+summary: 'Transform headers'
 
 testData:
   Rules:

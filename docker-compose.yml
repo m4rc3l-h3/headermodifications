@@ -8,14 +8,14 @@ services:
       - --providers.docker
       - --providers.file.filename=/rules-htransformation.yaml
       - --log.level=DEBUG
-      - --experimental.localPlugins.htransformation.moduleName=github.com/tomMoulard/htransformation
+      - --experimental.localPlugins.htransformation.moduleName=github.com/m4rc3l-h3/htransformation
     ports:
       - 80:80
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./rules-htransformation.yaml:/rules-htransformation.yaml
-      - .:/plugins-local/src/github.com/tomMoulard/htransformation/
+      - .:/plugins-local/src/github.com/m4rc3l-h3/htransformation/
     tty: true
 
   whoami:

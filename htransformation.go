@@ -7,12 +7,12 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/tomMoulard/htransformation/pkg/handler/deleter"
-	"github.com/tomMoulard/htransformation/pkg/handler/join"
-	"github.com/tomMoulard/htransformation/pkg/handler/rename"
-	"github.com/tomMoulard/htransformation/pkg/handler/rewrite"
-	"github.com/tomMoulard/htransformation/pkg/handler/set"
-	"github.com/tomMoulard/htransformation/pkg/types"
+	"github.com/m4rc3l-h3/htransformation/pkg/handler/deleter"
+	"github.com/m4rc3l-h3/htransformation/pkg/handler/join"
+	"github.com/m4rc3l-h3/htransformation/pkg/handler/rename"
+	"github.com/m4rc3l-h3/htransformation/pkg/handler/rewrite"
+	"github.com/m4rc3l-h3/htransformation/pkg/handler/set"
+	"github.com/m4rc3l-h3/htransformation/pkg/types"
 )
 
 // HeadersTransformation holds the necessary components of a Traefik plugin.

@@ -5,10 +5,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/tomMoulard/htransformation/pkg/handler/deleter"
-	"github.com/tomMoulard/htransformation/pkg/tests/assert"
-	"github.com/tomMoulard/htransformation/pkg/tests/require"
-	"github.com/tomMoulard/htransformation/pkg/types"
+	"github.com/m4rc3l-h3/htransformation/pkg/handler/deleter"
+	"github.com/m4rc3l-h3/htransformation/pkg/tests/assert"
+	"github.com/m4rc3l-h3/htransformation/pkg/tests/require"
+	"github.com/m4rc3l-h3/htransformation/pkg/types"
 )
 
 func TestDeleteHandler(t *testing.T) {

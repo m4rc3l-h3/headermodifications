@@ -5,10 +5,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	plug "github.com/tomMoulard/htransformation"
-	"github.com/tomMoulard/htransformation/pkg/tests/assert"
-	"github.com/tomMoulard/htransformation/pkg/tests/require"
-	"github.com/tomMoulard/htransformation/pkg/types"
+	plug "github.com/m4rc3l-h3/htransformation"
+	"github.com/m4rc3l-h3/htransformation/pkg/tests/assert"
+	"github.com/m4rc3l-h3/htransformation/pkg/tests/require"
+	"github.com/m4rc3l-h3/htransformation/pkg/types"
 )
 
 func TestValidation(t *testing.T) {
