@@ -4,9 +4,28 @@ This plugin allows modifying on the fly, the header value of a request.
 
 ## How to dev
 
+To check if the development environment is correctly set up, start the `traefik` and `whoami`
+container using the following command (or the related task if you are using VSCode):
+
 ```bash
 $ docker compose up
 ```
+
+Open a terminal and execute the following command:
+
+```bash
+$ curl -H "Host: whoami.localhost" localhost:8080
+```
+
+If the environment is correctly set up, the ouput of whoami contains the `X-Test` header:
+
+```bash
+$ curl -H "Host: whoami.localhost" localhost:8080
+Name: whoami
+...
+X-Test: Passed
+```
+If that header is not contained check the logs of the `traefik` container.
 
 ## How to use
 
@@ -177,8 +196,6 @@ A rule Delete need one arguments
       Type: 'Del'
 ```
 
-
-
 ### Join Rule
 
 A Join rule will concatenate the values of the existing header with the new one. If the header
@@ -308,8 +325,7 @@ The rules will be evaluated in the order of definition
 ```
 Will set the header `X-Custom-2` to 'True', then delete it and set it again but with `False`
 
-# Authors
+# Credits
 
-| Tom Moulard | Clément David | Martin Huvelle | Alexandre Bossut-Lasry |
-|-------------|---------------|----------------|------------------------|
-|[![](img/gopher-tom_moulard.png)](https://tom.moulard.org)|[![](img/gopher-clement_david.png)](https://github.com/cledavid)|[![](img/gopher-martin_huvelle.png)](https://github.com/nitra-mfs)|[![](img/gopher-alexandre_bossut-lasry.png)](https://www.linkedin.com/in/alexandre-bossut-lasry/)|
+The plugin is based on the excellent work of
+[tomMoulard/htransformation](https://github.com/tomMoulard/htransformation).
