@@ -1,7 +1,7 @@
 displayName: Header transformation - Extended
 type: middleware
 
-import: github.com/m4rc3l-h3/htransformation
+import: github.com/m4rc3l-h3/header-modifications
 
 summary: 'Transform headers using rules applied on request and response headers'
 
