@@ -20,6 +20,10 @@ const (
 	Rename RuleType = "Rename"
 	// RewriteValueRule will replace the value of a header with the provided value.
 	RewriteValueRule RuleType = "RewriteValueRule"
+	// SetFrom will set the value of a header with that of another header
+	SetFrom RuleType = "SetFrom"
+	// SetFrist will set the value of a header to the first non-empty header value of anohter header
+	SetFirst RuleType = "SetFirst"
 )
 
 // Rule struct so that we get traefik config.

@@ -1,11 +1,11 @@
-package set_test
+package set_first_test
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/tomMoulard/htransformation/pkg/handler/set"
+	"github.com/tomMoulard/htransformation/pkg/handler/set_first"
 	"github.com/tomMoulard/htransformation/pkg/tests/assert"
 	"github.com/tomMoulard/htransformation/pkg/tests/require"
 	"github.com/tomMoulard/htransformation/pkg/types"
@@ -22,62 +22,68 @@ func TestSetHandler(t *testing.T) {
 		wantOnResponse map[string]string
 		expectedHost   string
 	}{
-		// {
-		// 	name: "Set one simple",
-		// 	rule: types.Rule{
-		// 		Header: "X-Test",
-		// 		Value:  "Tested",
-		// 	},
-		// 	requestHeaders: map[string]string{
-		// 		"Foo": "Bar",
-		// 	},
-		// 	wantOnRequest: map[string]string{
-		// 		"Foo":    "Bar",
-		// 		"X-Test": "Tested",
-		// 	},
-		// 	expectedHost: "example.com",
-		// },
-		// {
-		// 	name: "Set already existing simple",
-		// 	rule: types.Rule{
-		// 		Header: "X-Test",
-		// 		Value:  "Tested",
-		// 	},
-		// 	requestHeaders: map[string]string{
-		// 		"Foo":    "Bar",
-		// 		"X-Test": "Bar",
-		// 	},
-		// 	wantOnRequest: map[string]string{
-		// 		"Foo":    "Bar",
-		// 		"X-Test": "Tested", // Override
-		// 	},
-		// 	expectedHost: "example.com",
-		// },
 		{
-			name: "Set on response",
+			name: "Set first both given",
 			rule: types.Rule{
-				Header:        "X-Test",
-				Value:         "Tested",
-				SetOnResponse: true,
+				Header: "X-Test",
+				Values: []string{
+					"^X-First",
+					"^X-Second",
+				},
+				HeaderPrefix: "^",
+			},
+			requestHeaders: map[string]string{
+				"Foo":      "Bar",
+				"X-First":  "First",
+				"X-Second": "Second",
+			},
+			wantOnRequest: map[string]string{
+				"Foo":      "Bar",
+				"X-First":  "First",
+				"X-Second": "Second",
+				"X-Test":   "First",
+			},
+			expectedHost: "example.com",
+		},
+		{
+			name: "Set first only second given",
+			rule: types.Rule{
+				Header: "X-Test",
+				Values: []string{
+					"^X-First",
+					"^X-Second",
+				},
+				HeaderPrefix: "^",
+			},
+			requestHeaders: map[string]string{
+				"Foo":      "Bar",
+				"X-Second": "Second",
+			},
+			wantOnRequest: map[string]string{
+				"Foo":      "Bar",
+				"X-Second": "Second",
+				"X-Test":   "Second",
+			},
+			expectedHost: "example.com",
+		},
+		{
+			name: "Set first no headers given",
+			rule: types.Rule{
+				Header: "X-Test",
+				Values: []string{
+					"^X-First",
+					"^X-Second",
+				},
+				HeaderPrefix: "^",
 			},
 			requestHeaders: map[string]string{
 				"Foo": "Bar",
 			},
 			wantOnRequest: map[string]string{
-				"Foo": "Bar",
-			},
-			wantOnResponse: map[string]string{
-				"X-Test": "Tested",
+				"Foo":    "Bar",
+				"X-Test": "",
 			},
 			expectedHost: "example.com",
-		},
-		{
-			name: "Set Host header",
-			rule: types.Rule{
-				Header: "Host",
-				Value:  "example.org",
-			},
-			expectedHost: "example.org",
 		},
 	}
 
@@ -92,7 +98,7 @@ func TestSetHandler(t *testing.T) {
 				req.Header.Add(hName, hVal)
 			}
 
-			setHandler, err := set.New(test.rule)
+			setHandler, err := set_first.New(test.rule)
 			require.NoError(t, err)
 
 			rw := httptest.NewRecorder()
@@ -127,15 +133,38 @@ func TestValidation(t *testing.T) {
 		{
 			name: "missing Header value",
 			rule: types.Rule{
-				Type: types.Set,
+				HeaderPrefix: "^",
+				Values:       []string{"not-empty"},
+				Type:         types.SetFirst,
+			},
+			wantErr: true,
+		},
+		{
+			name: "missing HeaderPrefix",
+			rule: types.Rule{
+				Header: "not-empty",
+				Values: []string{"not-empty"},
+				Type:   types.SetFirst,
+			},
+			wantErr: true,
+		},
+		{
+			name: "missing Values",
+			rule: types.Rule{
+				Header:       "not-empty",
+				HeaderPrefix: "^",
+
+				Type: types.SetFirst,
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid rule",
 			rule: types.Rule{
-				Header: "not-empty",
-				Type:   types.Set,
+				Header:       "not-empty",
+				HeaderPrefix: "^",
+				Values:       []string{"not-empty"},
+				Type:         types.SetFirst,
 			},
 			wantErr: false,
 		},
@@ -145,7 +174,7 @@ func TestValidation(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			setHandler, err := set.New(test.rule)
+			setHandler, err := set_first.New(test.rule)
 			require.NoError(t, err)
 
 			err = setHandler.Validate()
