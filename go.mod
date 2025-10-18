@@ -1,3 +1,3 @@
 module github.com/m4rc3l-h3/headermodifications
 
-go 1.24
+go 1.17
