@@ -156,31 +156,32 @@ func TestSetHandler(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
 			req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://example.com/foo", nil)
 			require.NoError(t, err)
 
-			for hName, hVal := range test.requestHeaders {
+			for hName, hVal := range tc.requestHeaders {
 				req.Header.Add(hName, hVal)
 			}
 
-			setHandler, err := set.New(test.rule)
+			setHandler, err := set.New(tc.rule)
 			require.NoError(t, err)
 
 			rw := httptest.NewRecorder()
 			setHandler.Handle(rw, req)
 
-			for hName, hVal := range test.wantOnRequest {
+			for hName, hVal := range tc.wantOnRequest {
 				assert.Equal(t, hVal, req.Header.Get(hName))
 			}
 
-			for hName, hVal := range test.wantOnResponse {
+			for hName, hVal := range tc.wantOnResponse {
 				assert.Equal(t, hVal, rw.Header().Get(hName))
 			}
 
-			assert.Equal(t, test.expectedHost, req.Host)
+			assert.Equal(t, tc.expectedHost, req.Host)
 			assert.Equal(t, "example.com", req.URL.Host)
 		})
 	}
@@ -199,40 +200,39 @@ func TestValidation(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "missing Header value",
+			name: "missing Header and value",
 			rule: types.Rule{
 				Type: types.Set,
 			},
 			wantErr: true,
 		},
 		{
-			name: "missing Value when HeaderPrefix is set",
+			name: "missing value",
 			rule: types.Rule{
-				Header:       "not-empty",
-				HeaderPrefix: "not-empty",
-				Type:         types.Set,
+				Header: "not-empty",
+				Type:   types.Set,
 			},
 			wantErr: true,
 		},
 		{
-			name: "missing HeaderPrefix when Value is set",
+			name: "missing header",
+			rule: types.Rule{
+				Value: "not-empty",
+				Type:  types.Set,
+			},
+			wantErr: true,
+		},
+		{
+			name: "valid header replacement rule without header prefix",
 			rule: types.Rule{
 				Header: "not-empty",
 				Value:  "not-empty",
 				Type:   types.Set,
 			},
-			wantErr: true,
-		},
-		{
-			name: "valid rule",
-			rule: types.Rule{
-				Header: "not-empty",
-				Type:   types.Set,
-			},
 			wantErr: false,
 		},
 		{
-			name: "valid header replacement rule",
+			name: "valid header replacement rule with header prefix",
 			rule: types.Rule{
 				Header:       "not-empty",
 				HeaderPrefix: "not-empty",
@@ -244,17 +244,23 @@ func TestValidation(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			setHandler, err := set.New(test.rule)
+			setHandler, err := set.New(tc.rule)
 			require.NoError(t, err)
+
+			t.Logf("Test case: %s\nHeader: %q\nValue: %q\nError: %#v\nWantErr: %v", tc.name, tc.rule.Header, tc.rule.Value, err, tc.wantErr)
 
 			err = setHandler.Validate()
 			t.Log(err)
 
-			if test.wantErr {
+			if tc.wantErr {
 				assert.Error(t, err)
+				t.Log(err)
+
 			} else {
 				assert.NoError(t, err)
 			}

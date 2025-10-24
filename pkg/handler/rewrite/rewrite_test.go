@@ -141,31 +141,32 @@ func TestRewriteHandler(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
 			req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://example.com/foo", nil)
 			require.NoError(t, err)
 
-			for hName, hVal := range test.requestHeaders {
+			for hName, hVal := range tc.requestHeaders {
 				req.Header.Add(hName, hVal)
 			}
 
-			rewriteHandler, err := rewrite.New(test.rule)
+			rewriteHandler, err := rewrite.New(tc.rule)
 			require.NoError(t, err)
 
 			rewriteHandler.Handle(nil, req)
 
-			for hName, hVal := range test.expectedHeaders {
+			for hName, hVal := range tc.expectedHeaders {
 				actual := req.Header.Get(hName)
-				if test.name == "multiple replacements in single header value" {
+				if tc.name == "multiple replacements in single header value" {
 					t.Logf("DEBUG: actual header value: %q", actual)
 				}
 
 				assert.Equal(t, hVal, actual)
 			}
 
-			assert.Equal(t, test.expectedHost, req.Host)
+			assert.Equal(t, tc.expectedHost, req.Host)
 			assert.Equal(t, "example.com", req.URL.Host)
 		})
 	}
@@ -221,11 +222,12 @@ func TestValidation(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			rewriteHandler, err := rewrite.New(test.rule)
-			if test.wantNewErr {
+			rewriteHandler, err := rewrite.New(tc.rule)
+			if tc.wantNewErr {
 				assert.Error(t, err)
 
 				return
@@ -236,7 +238,7 @@ func TestValidation(t *testing.T) {
 			err = rewriteHandler.Validate()
 			t.Log(err)
 
-			if test.wantValidateErr {
+			if tc.wantValidateErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)

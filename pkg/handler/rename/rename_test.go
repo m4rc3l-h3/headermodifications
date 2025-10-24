@@ -100,26 +100,27 @@ func TestRenameHandler(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
 			req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://example.com/foo", nil)
 			require.NoError(t, err)
 
-			for hName, hVal := range test.requestHeaders {
+			for hName, hVal := range tc.requestHeaders {
 				req.Header.Add(hName, hVal)
 			}
 
-			renameHandler, err := rename.New(test.rule)
+			renameHandler, err := rename.New(tc.rule)
 			require.NoError(t, err)
 
 			renameHandler.Handle(nil, req)
 
-			for hName, hVal := range test.expectedHeaders {
+			for hName, hVal := range tc.expectedHeaders {
 				assert.Equal(t, hVal, req.Header.Get(hName))
 			}
 
-			assert.Equal(t, test.expectedHost, req.Host)
+			assert.Equal(t, tc.expectedHost, req.Host)
 			assert.Equal(t, "example.com", req.URL.Host)
 		})
 	}
@@ -166,11 +167,12 @@ func TestValidation(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			renameHandler, err := rename.New(test.rule)
-			if test.wantNewErr {
+			renameHandler, err := rename.New(tc.rule)
+			if tc.wantNewErr {
 				assert.Error(t, err)
 
 				return
@@ -181,7 +183,7 @@ func TestValidation(t *testing.T) {
 			err = renameHandler.Validate()
 			t.Log(err)
 
-			if test.wantValidateErr {
+			if tc.wantValidateErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)

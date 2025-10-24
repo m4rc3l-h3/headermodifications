@@ -17,9 +17,7 @@ func New(rule types.Rule) (types.Handler, error) {
 }
 
 func (s *Set) Validate() error {
-	if s.rule.Header == "" ||
-		(s.rule.HeaderPrefix != "" && s.rule.Value == "") ||
-		(s.rule.Value != "" && s.rule.HeaderPrefix == "") {
+	if s.rule.Header == "" || s.rule.Value == "" {
 		return types.ErrMissingRequiredFields
 	}
 

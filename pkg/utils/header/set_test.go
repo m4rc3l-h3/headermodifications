@@ -70,16 +70,17 @@ func TestSet(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
 			req := httptest.NewRequest(http.MethodGet, "http://example.com/foo", nil)
-			header.Set(req, test.header, test.value)
+			header.Set(req, tc.header, tc.value)
 
-			assert.Equal(t, test.expectedHost, req.Host)
+			assert.Equal(t, tc.expectedHost, req.Host)
 
 			for hName, hVal := range req.Header {
-				assert.Equalf(t, test.expectedHeaders[hName], hVal, "header %q", hName)
+				assert.Equalf(t, tc.expectedHeaders[hName], hVal, "header %q", hName)
 			}
 		})
 	}

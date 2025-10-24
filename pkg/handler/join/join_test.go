@@ -189,26 +189,27 @@ func TestJoinHandler(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
 			req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://example.com/foo", nil)
 			require.NoError(t, err)
 
-			for hName, hVal := range test.requestHeaders {
+			for hName, hVal := range tc.requestHeaders {
 				req.Header.Add(hName, hVal)
 			}
 
-			joinHandler, err := join.New(test.rule)
+			joinHandler, err := join.New(tc.rule)
 			require.NoError(t, err)
 
 			joinHandler.Handle(nil, req)
 
-			for hName, hVal := range test.expectedHeaders {
+			for hName, hVal := range tc.expectedHeaders {
 				assert.Equal(t, hVal, req.Header.Get(hName))
 			}
 
-			assert.Equal(t, test.expectedHost, req.Host)
+			assert.Equal(t, tc.expectedHost, req.Host)
 			assert.Equal(t, "example.com", req.URL.Host)
 		})
 	}
@@ -264,16 +265,17 @@ func TestValidation(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			joinHandler, err := join.New(test.rule)
+			joinHandler, err := join.New(tc.rule)
 			require.NoError(t, err)
 
 			err = joinHandler.Validate()
 			t.Log(err)
 
-			if test.wantErr {
+			if tc.wantErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)

@@ -95,11 +95,12 @@ func TestValidation(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			_, err := plug.New(t.Context(), nil, test.config, "test")
-			if test.wantErr {
+			_, err := plug.New(t.Context(), nil, tc.config, "test")
+			if tc.wantErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
@@ -157,11 +158,12 @@ func TestHeaderRules(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
 			cfg := plug.CreateConfig()
-			cfg.Rules = []types.Rule{test.rule}
+			cfg.Rules = []types.Rule{tc.rule}
 
 			next := http.HandlerFunc(func(http.ResponseWriter, *http.Request) {})
 
@@ -173,7 +175,7 @@ func TestHeaderRules(t *testing.T) {
 			req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://localhost", nil)
 			require.NoError(t, err)
 
-			for key, value := range test.additionalHeader {
+			for key, value := range tc.additionalHeader {
 				req.Header.Set(key, value)
 			}
 
@@ -182,7 +184,7 @@ func TestHeaderRules(t *testing.T) {
 			statusCode := result.StatusCode
 			require.NoError(t, result.Body.Close())
 
-			if test.wantErr {
+			if tc.wantErr {
 				assert.Equal(t, http.StatusInternalServerError, statusCode)
 			} else {
 				assert.Equal(t, http.StatusOK, statusCode)
@@ -231,14 +233,15 @@ func TestSetOnResponse(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
+		tc := test
+		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
 			cfg := plug.CreateConfig()
-			cfg.Rules = []types.Rule{test.rule}
+			cfg.Rules = []types.Rule{tc.rule}
 
 			next := http.HandlerFunc(func(rw http.ResponseWriter, _ *http.Request) {
-				rw.Header().Add(test.headerName, test.headerValue)
+				rw.Header().Add(tc.headerName, tc.headerValue)
 				rw.WriteHeader(http.StatusOK)
 			})
 
@@ -257,7 +260,7 @@ func TestSetOnResponse(t *testing.T) {
 
 			assert.Equal(t, http.StatusOK, statusCode)
 
-			assert.Equal(t, test.expectedNewValue, resp.Header.Get(test.rule.Header))
+			assert.Equal(t, tc.expectedNewValue, resp.Header.Get(tc.rule.Header))
 		})
 	}
 }
