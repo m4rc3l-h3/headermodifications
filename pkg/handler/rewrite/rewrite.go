@@ -15,6 +15,10 @@ type Rewrite struct {
 	ruleValueRegexp *regexp.Regexp
 }
 
+func (s *Rewrite) Debug() bool {
+	return s.rule.Debug
+}
+
 func New(rule types.Rule) (types.Handler, error) {
 	reg, err := regexp.Compile(rule.Header)
 	if err != nil {

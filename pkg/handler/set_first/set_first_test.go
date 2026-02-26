@@ -8,6 +8,7 @@ import (
 	"github.com/m4rc3l-h3/headermodifications/pkg/handler/set_first"
 	"github.com/m4rc3l-h3/headermodifications/pkg/tests/assert"
 	"github.com/m4rc3l-h3/headermodifications/pkg/tests/require"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/utils"
 	"github.com/m4rc3l-h3/headermodifications/pkg/types"
 )
 
@@ -189,4 +190,82 @@ func TestValidation(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSetHandlerWithDebug(t *testing.T) {
+
+	rule := types.Rule{
+		Name:         "debug-test",
+		Header:       "X-Test",
+		HeaderPrefix: "^",
+		Values:       []string{"^X-First"},
+		Debug:        true, // Enable debug
+		Type:         types.SetFirst,
+	}
+
+	setHandler, err := set_first.New(rule)
+	require.NoError(t, err)
+
+	// Test debug logging with matching header
+	logs := utils.CaptureLogs(t, func() {
+		req, _ := http.NewRequestWithContext(t.Context(), "GET", "http://example.com", nil)
+		req.Header.Set("X-First", "debug-value")
+		setHandler.Handle(httptest.NewRecorder(), req)
+	})
+
+	assert.Contains(t, logs, "[DEBUG set_first]")
+	assert.Contains(t, logs, "Request Host: example.com")
+	assert.Contains(t, logs, "got headerValue='debug-value'")
+	assert.Contains(t, logs, "MATCH!")
+	assert.Contains(t, logs, "SUCCESS: Set debug-test='debug-value'")
+}
+
+func TestSetHandlerDebugNoMatch(t *testing.T) {
+
+	rule := types.Rule{
+		Name:         "debug-no-match",
+		Header:       "X-Test",
+		HeaderPrefix: "^",
+		Values:       []string{"^X-Missing"},
+		Debug:        true,
+		Type:         types.SetFirst,
+	}
+
+	setHandler, err := set_first.New(rule)
+	require.NoError(t, err)
+
+	logs := utils.CaptureLogs(t, func() {
+		req, _ := http.NewRequestWithContext(t.Context(), "GET", "http://example.com", nil)
+		req.Header.Set("X-Other", "some-value") // Wrong header - no match
+		setHandler.Handle(httptest.NewRecorder(), req)
+	})
+
+	assert.Contains(t, logs, "[DEBUG set_first]")
+	assert.Contains(t, logs, "No matching value found from 1 attempts")
+	assert.NotContains(t, logs, "SUCCESS") // Should not succeed
+}
+
+func TestSetHandlerDebugEmptyValues(t *testing.T) {
+
+	rule := types.Rule{
+		Name:         "debug-empty",
+		Header:       "X-Test",
+		HeaderPrefix: "^",
+		Values:       []string{"^X-Empty1", "^X-Empty2"},
+		Debug:        true,
+		Type:         types.SetFirst,
+	}
+
+	setHandler, err := set_first.New(rule)
+	require.NoError(t, err)
+
+	logs := utils.CaptureLogs(t, func() {
+		req, _ := http.NewRequestWithContext(t.Context(), "GET", "http://example.com", nil)
+		// No matching headers present
+		setHandler.Handle(httptest.NewRecorder(), req)
+	})
+
+	assert.Contains(t, logs, "Trying value[0] '^X-Empty1': got headerValue=''")
+	assert.Contains(t, logs, "Trying value[1] '^X-Empty2': got headerValue=''")
+	assert.Contains(t, logs, "No matching value found from 2 attempts")
 }

@@ -13,6 +13,10 @@ type Rename struct {
 	rule *types.Rule
 }
 
+func (s *Rename) Debug() bool {
+	return s.rule.Debug
+}
+
 func New(rule types.Rule) (types.Handler, error) {
 	re, err := regexp.Compile(rule.Header)
 	if err != nil {

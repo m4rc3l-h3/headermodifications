@@ -11,6 +11,10 @@ type Deleter struct {
 	rule *types.Rule
 }
 
+func (s *Deleter) Debug() bool {
+	return s.rule.Debug
+}
+
 func New(rule types.Rule) (types.Handler, error) {
 	return &Deleter{rule: &rule}, nil
 }

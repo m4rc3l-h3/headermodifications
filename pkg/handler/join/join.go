@@ -12,6 +12,10 @@ type Join struct {
 	rule *types.Rule
 }
 
+func (s *Join) Debug() bool {
+	return s.rule.Debug
+}
+
 func New(rule types.Rule) (types.Handler, error) {
 	return &Join{rule: &rule}, nil
 }

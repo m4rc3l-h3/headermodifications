@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 
@@ -83,12 +84,19 @@ func New(_ context.Context, next http.Handler, config *Config, name string) (htt
 // Iterate over every header to match the ones specified in the config and
 // return nothing if regexp failed.
 func (u *HeadersModifications) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+
 	for _, handler := range u.reqHandlers {
+		if handler.Debug() {
+			log.Printf("[DEBUG plugin] Executing req handler")
+		}
 		handler.Handle(responseWriter, request)
 	}
 
 	wrappedResponseWriter := newWrappedResponseWriter(responseWriter, func(rw http.ResponseWriter) {
 		for _, handler := range u.respHandlers {
+			if handler.Debug() {
+				log.Printf("[DEBUG plugin] Executing resp handler")
+			}
 			handler.Handle(rw, request)
 		}
 	})

@@ -12,6 +12,10 @@ type Set struct {
 	rule *types.Rule
 }
 
+func (s *Set) Debug() bool {
+	return s.rule.Debug
+}
+
 func New(rule types.Rule) (types.Handler, error) {
 	return &Set{rule: &rule}, nil
 }

@@ -8,6 +8,7 @@ import (
 	plug "github.com/m4rc3l-h3/headermodifications"
 	"github.com/m4rc3l-h3/headermodifications/pkg/tests/assert"
 	"github.com/m4rc3l-h3/headermodifications/pkg/tests/require"
+	"github.com/m4rc3l-h3/headermodifications/pkg/tests/utils"
 	"github.com/m4rc3l-h3/headermodifications/pkg/types"
 )
 
@@ -263,4 +264,38 @@ func TestSetOnResponse(t *testing.T) {
 			assert.Equal(t, tc.expectedNewValue, resp.Header.Get(tc.rule.Header))
 		})
 	}
+}
+
+func TestDebugLogging(t *testing.T) {
+	t.Parallel()
+
+	cfg := plug.CreateConfig()
+	cfg.Rules = []types.Rule{
+		{
+			Name:         "debug-set-first",
+			Type:         types.SetFirst,
+			Header:       "X-Test",
+			HeaderPrefix: "^",
+			Values:       []string{"^X-First"},
+			Debug:        true,
+		},
+	}
+
+	next := http.HandlerFunc(func(http.ResponseWriter, *http.Request) {})
+	handler, err := plug.New(t.Context(), next, cfg, "test-plugin")
+	require.NoError(t, err)
+
+	// Test that debug logs are captured
+	logs := utils.CaptureLogs(t, func() {
+		req, _ := http.NewRequestWithContext(t.Context(), "GET", "http://test", nil)
+		req.Header.Set("X-First", "debug-value")
+		handler.ServeHTTP(httptest.NewRecorder(), req)
+	})
+
+	// Verify debug messages were logged
+	assert.Contains(t, logs, "[DEBUG set_first]")
+	assert.Contains(t, logs, "debug-set-first")
+	assert.Contains(t, logs, "got headerValue='debug-value'")
+	assert.Contains(t, logs, "MATCH!")
+	assert.Contains(t, logs, "SUCCESS")
 }

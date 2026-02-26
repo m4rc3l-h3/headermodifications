@@ -37,6 +37,7 @@ type Rule struct {
 	Values       []string       `yaml:"Values"`       // values to join
 	// if SetOnResponse is true, the header will be changed on the response. It will be on the request otherwise (default).
 	SetOnResponse bool `yaml:"SetOnResponse"`
+	Debug         bool `json:"debug,omitempty"`
 }
 
 var ErrMissingRequiredFields = errors.New("missing required fields")
@@ -50,4 +51,5 @@ var ErrNotHTTPHijacker = errors.New("not an http.Hijacker")
 type Handler interface {
 	Validate() error
 	Handle(rw http.ResponseWriter, req *http.Request)
+	Debug() bool
 }
