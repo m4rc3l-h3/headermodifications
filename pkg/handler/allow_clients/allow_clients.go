@@ -92,8 +92,8 @@ func (c *AllowClients) Handle(rw http.ResponseWriter, req *http.Request) (blocke
 		}
 	}
 
-	rw.WriteHeader(200) // "Authorization successful, continue"
-	req.Header.Set(c.rule.Name, value)
+	// rw.WriteHeader(200) // "Authorization successful, continue"
+	// req.Header.Set(c.rule.Name, value)
 	return false
 }
 

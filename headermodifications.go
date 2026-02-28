@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"log"
 	"net"
 	"net/http"
 
@@ -89,7 +88,7 @@ func (u *HeadersModifications) ServeHTTP(responseWriter http.ResponseWriter, req
 
 	for _, handler := range u.reqHandlers {
 		if handler.Debug() {
-			log.Printf("[DEBUG plugin] Executing req handler")
+			fmt.Printf("[DEBUG plugin] Executing req handler")
 		}
 		if handler.Handle(responseWriter, request) {
 			return
@@ -99,7 +98,7 @@ func (u *HeadersModifications) ServeHTTP(responseWriter http.ResponseWriter, req
 	wrappedResponseWriter := newWrappedResponseWriter(responseWriter, func(rw http.ResponseWriter) {
 		for _, handler := range u.respHandlers {
 			if handler.Debug() {
-				log.Printf("[DEBUG plugin] Executing resp handler")
+				fmt.Printf("[DEBUG plugin] Executing resp handler")
 			}
 			handler.Handle(rw, request)
 		}
