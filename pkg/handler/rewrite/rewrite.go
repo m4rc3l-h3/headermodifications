@@ -63,7 +63,7 @@ func (r *Rewrite) replaceHeaderValue(headerValue string) string {
 	})
 }
 
-func (r *Rewrite) Handle(rw http.ResponseWriter, req *http.Request) {
+func (r *Rewrite) Handle(rw http.ResponseWriter, req *http.Request) (blocked bool) {
 	headers := req.Header
 	if r.rule.SetOnResponse {
 		headers = rw.Header()
@@ -94,4 +94,5 @@ func (r *Rewrite) Handle(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	req.Header.Set("Host", originalHost)
+	return false
 }

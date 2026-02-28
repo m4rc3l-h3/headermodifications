@@ -23,12 +23,13 @@ func (d *Deleter) Validate() error {
 	return nil
 }
 
-func (d *Deleter) Handle(rw http.ResponseWriter, req *http.Request) {
+func (d *Deleter) Handle(rw http.ResponseWriter, req *http.Request) (blocked bool) {
 	if d.rule.SetOnResponse {
 		rw.Header().Del(d.rule.Header)
 
-		return
+		return false
 	}
 
 	header.Delete(req, d.rule.Header)
+	return false
 }

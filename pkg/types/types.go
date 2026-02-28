@@ -21,7 +21,8 @@ const (
 	// RewriteValueRule will replace the value of a header with the provided value.
 	RewriteValueRule RuleType = "RewriteValueRule"
 	// SetFrist will set the value of a header to the first non-empty header value of anohter header
-	SetFirst RuleType = "SetFirst"
+	SetFirst     RuleType = "SetFirst"
+	AllowClients RuleType = "AllowClients"
 )
 
 // Rule struct so that we get traefik config.
@@ -38,6 +39,19 @@ type Rule struct {
 	// if SetOnResponse is true, the header will be changed on the response. It will be on the request otherwise (default).
 	SetOnResponse bool `yaml:"SetOnResponse"`
 	Debug         bool `json:"debug,omitempty"`
+
+	// Value to use for LAN requests, e.g. "lan"
+	LanValue string `json:"lanValue,omitempty" yaml:"LanValue,omitempty"`
+	// Value to use for WAN requests, e.g. "wan"
+	WanValue string `json:"wanValue,omitempty" yaml:"WanValue,omitempty"`
+	// e.g. "X-Forwarded-For" or "X-Real-IP"
+	TrustedHeader string `json:"trustedHeader,omitempty" yaml:"TrustedHeader,omitempty"`
+	// Whether LAN is allowed
+	AllowLan bool `json:"allowLan,omitempty" yaml:"AllowLan,omitempty"`
+	// Allowed WAN IPs/CIDRs, e.g. ["203.0.113.5/32"]
+	WanIPs []string `json:"wanIPs,omitempty" yaml:"WanIPs,omitempty"`
+	// HTTP status for rejects (default 403)
+	RejectStatus int `json:"rejectStatus,omitempty" yaml:"RejectStatus,omitempty"`
 }
 
 var ErrMissingRequiredFields = errors.New("missing required fields")
@@ -50,6 +64,6 @@ var ErrNotHTTPHijacker = errors.New("not an http.Hijacker")
 
 type Handler interface {
 	Validate() error
-	Handle(rw http.ResponseWriter, req *http.Request)
+	Handle(rw http.ResponseWriter, req *http.Request) (blocked bool)
 	Debug() bool
 }

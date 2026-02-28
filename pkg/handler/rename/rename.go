@@ -36,7 +36,7 @@ func (r *Rename) Validate() error {
 	return nil
 }
 
-func (r *Rename) Handle(rw http.ResponseWriter, req *http.Request) {
+func (r *Rename) Handle(rw http.ResponseWriter, req *http.Request) (blocked bool) {
 	originalHost := req.Header.Get("Host") // Eventually X-Forwarded-Host
 	req.Header.Set("Host", req.Host)
 
@@ -61,4 +61,5 @@ func (r *Rename) Handle(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	req.Header.Set("Host", originalHost)
+	return false
 }

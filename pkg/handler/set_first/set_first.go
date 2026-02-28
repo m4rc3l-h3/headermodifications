@@ -29,7 +29,7 @@ func (s *SetFirst) Validate() error {
 	return nil
 }
 
-func (s *SetFirst) Handle(rw http.ResponseWriter, req *http.Request) {
+func (s *SetFirst) Handle(rw http.ResponseWriter, req *http.Request) (blocked bool) {
 
 	if s.rule.Debug {
 		log.Printf("[DEBUG set_first] Rule: %+v, Request Host: %s, Headers: %v",
@@ -68,11 +68,13 @@ func (s *SetFirst) Handle(rw http.ResponseWriter, req *http.Request) {
 				log.Printf("[DEBUG set_first] SUCCESS: Set %s='%s'", s.rule.Name, headerValue)
 			}
 
-			return
+			return false
 		}
 	}
 
 	if s.rule.Debug {
 		log.Printf("[DEBUG set_first] No matching value found from %d attempts", len(s.rule.Values))
 	}
+
+	return false
 }

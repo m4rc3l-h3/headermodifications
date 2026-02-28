@@ -4,11 +4,17 @@ http:
       plugin:
         headermodifications:
           Rules:
-            - Rule:
-              Name: 'Set Test header'
-              Header: 'X-Test'
-              Value: "Passed"
+            - Name: 'Set test header'
+              Header: 'X-Test-Test'
+              Value: 'Passed'
               Type: 'Set'
               HeaderPrefix: ^
-            
-            
+            # - Type: AllowClients
+            #   Name: 'AllowClients'
+            #   LanValue: "LAN"
+            #   WanValue: "WAN"
+            #   TrustedHeader: "X-Forwarded-Origin"
+            #   Debug: true
+            #   AllowLan: false
+            #   WanIPs: ["172.24.0.1"]
+            #   RejectStatus: 403

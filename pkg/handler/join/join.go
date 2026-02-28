@@ -28,7 +28,7 @@ func (j *Join) Validate() error {
 	return nil
 }
 
-func (j *Join) Handle(rw http.ResponseWriter, req *http.Request) {
+func (j *Join) Handle(rw http.ResponseWriter, req *http.Request) (blocked bool) {
 	var val []string
 	if strings.EqualFold(j.rule.Header, "Host") {
 		val = []string{req.Host}
@@ -37,7 +37,7 @@ func (j *Join) Handle(rw http.ResponseWriter, req *http.Request) {
 		val, ok = req.Header[j.rule.Header]
 
 		if !ok {
-			return
+			return false
 		}
 	}
 
@@ -49,7 +49,7 @@ func (j *Join) Handle(rw http.ResponseWriter, req *http.Request) {
 	if j.rule.SetOnResponse {
 		rw.Header().Set(j.rule.Name, newHeaderVal)
 
-		return
+		return false
 	}
 
 	if strings.EqualFold(j.rule.Header, "Host") {
@@ -57,4 +57,6 @@ func (j *Join) Handle(rw http.ResponseWriter, req *http.Request) {
 	} else {
 		req.Header.Set(j.rule.Header, newHeaderVal)
 	}
+
+	return false
 }

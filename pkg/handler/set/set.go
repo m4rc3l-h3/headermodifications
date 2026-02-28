@@ -28,15 +28,16 @@ func (s *Set) Validate() error {
 	return nil
 }
 
-func (s *Set) Handle(rw http.ResponseWriter, req *http.Request) {
+func (s *Set) Handle(rw http.ResponseWriter, req *http.Request) (blocked bool) {
 
 	newHeaderVal := utils.GetValue(s.rule.Value, s.rule.HeaderPrefix, req)
 
 	if s.rule.SetOnResponse {
 		rw.Header().Set(s.rule.Header, newHeaderVal)
 
-		return
+		return false
 	}
 
 	header.Set(req, s.rule.Header, newHeaderVal)
+	return false
 }

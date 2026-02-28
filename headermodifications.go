@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/m4rc3l-h3/headermodifications/pkg/handler/allow_clients"
 	"github.com/m4rc3l-h3/headermodifications/pkg/handler/deleter"
 	"github.com/m4rc3l-h3/headermodifications/pkg/handler/join"
 	"github.com/m4rc3l-h3/headermodifications/pkg/handler/rename"
@@ -46,6 +47,7 @@ func New(_ context.Context, next http.Handler, config *Config, name string) (htt
 		types.RewriteValueRule: rewrite.New,
 		types.Set:              set.New,
 		types.SetFirst:         set_first.New,
+		types.AllowClients:     allow_clients.New,
 	}
 
 	reqHandlers := make([]types.Handler, 0, len(config.Rules))
@@ -89,7 +91,9 @@ func (u *HeadersModifications) ServeHTTP(responseWriter http.ResponseWriter, req
 		if handler.Debug() {
 			log.Printf("[DEBUG plugin] Executing req handler")
 		}
-		handler.Handle(responseWriter, request)
+		if handler.Handle(responseWriter, request) {
+			return
+		}
 	}
 
 	wrappedResponseWriter := newWrappedResponseWriter(responseWriter, func(rw http.ResponseWriter) {
